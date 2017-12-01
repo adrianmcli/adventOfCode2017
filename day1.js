@@ -1,15 +1,23 @@
 const parseStr = x => x.split('').map(x => parseInt(x, 10))
-const makeList = arr => arr.reduce((acc = [], curr, idx) => {
-  if (idx === 0) {
-    const lastItem = arr[arr.length - 1]
-    return lastItem === curr ? [curr] : []
-  }
-  const prevItem = arr[idx-1]
-  return curr === prevItem ? [...acc, curr] : acc;
-}, [])
 
-const solve = x =>
-  makeList(parseStr(x)).reduce((a, b) => a + b, 0)
+// Recursive
+const sumCaptchaRecursive = list => {
+  if (list.length === 1) return 0
+  const [x1, x2, ...xs] = list
+  return x1 === x2 ? x2 + sumCaptcha([x2, ...xs]) : sumCaptcha([x2, ...xs])
+}
+
+// Reduce
+const sumCaptchaReduce = list => list.reduce((acc, curr, idx) => {
+  if (idx === 0) return 0;
+  return curr === list[idx - 1] ? acc + curr : acc;
+}, 0)
+
+// Since there is no tail call optimization in JS, we choose the reduce method
+const solve = x => {
+  const numList = parseStr(x)
+  return sumCaptchaReduce([...numList, numList[0]])
+}
 
 console.log(solve("1122"))
 console.log(solve("1111"))
